@@ -5,24 +5,26 @@ namespace TodoAPI.Data
 {
     public class TodoContext : DbContext
     {
-        private readonly IConfiguration _config;
+        private readonly IConfiguration config;
 
         public TodoContext(DbContextOptions options, IConfiguration config) : base(options)
         {
-            _config = config;
+            this.config = config;
         }
 
         public DbSet<Todo> Todos { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(
-                Environment.GetEnvironmentVariable(
-                    _config.GetValue<string>("EnvKeys:DbUserConn")));
-        }
+            var envVariableName = config.GetValue<string>("EnvKeys:TodoDbConn");
+            var connectionString = Environment.GetEnvironmentVariable(envVariableName);
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new Exception($"The environment variable {envVariableName} is not set.");
+            }
+
+            optionsBuilder.UseSqlServer(connectionString);
         }
     }
 }

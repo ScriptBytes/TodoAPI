@@ -9,8 +9,11 @@ RUN dotnet restore
 COPY . ./
 RUN dotnet publish -c Release -o build --no-restore
 
+RUN dotnet tool install --global dotnet-ef
+
+ENV PATH="${PATH}:/root/.dotnet/tools"
 ARG MIGRATION_CONNECTION
-RUN dotnet ef database update --connection $MIGRATION_CONNECTION
+RUN dotnet ef database update --connection $MIGRATION_CONNECTION --project /TodoAPI/TodoAPI.csproj
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app

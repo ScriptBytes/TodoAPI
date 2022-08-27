@@ -11,7 +11,7 @@ using TodoAPI.Data;
 namespace TodoAPI.Migrations
 {
     [DbContext(typeof(TodoContext))]
-    [Migration("20220821204238_InitialMigration")]
+    [Migration("20220823025901_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
